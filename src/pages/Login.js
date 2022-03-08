@@ -26,14 +26,16 @@ class Login extends Component {
   handleButtonLogin = (event) => {
     event.preventDefault();
     const { value } = event.target;
-    createUser({ name: value });
     this.setState({
       loading: true,
+    },
+    async () => {
+      await createUser({ name: value });
+      this.setState({
+        loading: false,
+        redirect: true,
+      });
     });
-    const second = 500;
-    setTimeout(() => {
-      this.setState({ redirect: true });
-    }, second);
   }
 
   render() {
