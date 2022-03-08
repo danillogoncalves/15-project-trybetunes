@@ -10,20 +10,20 @@ class Login extends Component {
       loading: false,
       redirect: false,
       nameLogin: '',
-      isDisebedButtonLogin: true,
+      isDisebedButton: true,
     };
   }
 
-  handleInputLogin = ({ target }) => {
+  handleInput = ({ target }) => {
     const { name, value } = target;
     this.setState({
       [name]: value,
     }, this.setState({
-      isDisebedButtonLogin: value.length <= 2,
+      isDisebedButton: value.length <= 2,
     }));
   }
 
-  handleButtonLogin = (event) => {
+  handleButton = (event) => {
     event.preventDefault();
     const { value } = event.target;
     this.setState({
@@ -41,7 +41,7 @@ class Login extends Component {
   render() {
     const {
       nameLogin,
-      isDisebedButtonLogin,
+      isDisebedButton,
       redirect,
       loading,
     } = this.state;
@@ -58,7 +58,7 @@ class Login extends Component {
                     data-testid="login-name-input"
                     value={ nameLogin }
                     name="nameLogin"
-                    onChange={ this.handleInputLogin }
+                    onChange={ this.handleInput }
                   />
                 </div>
                 <div>
@@ -66,8 +66,8 @@ class Login extends Component {
                     type="submit"
                     value={ nameLogin }
                     data-testid="login-submit-button"
-                    disabled={ isDisebedButtonLogin }
-                    onClick={ this.handleButtonLogin }
+                    disabled={ isDisebedButton }
+                    onClick={ this.handleButton }
                   >
                     Entrar
                   </button>
