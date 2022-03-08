@@ -19,7 +19,6 @@ class Album extends Component {
 
   componentDidMount() {
     const { match: { params: { id } } } = this.props;
-    console.log(id);
     this.setState({
       loading: true,
     }, async () => {
@@ -54,11 +53,10 @@ class Album extends Component {
                 <p data-testid="artist-name">{ artistName }</p>
                 <p data-testid="album-name">{ collectionName }</p>
                 <div>
-                  { listMusic.map(({ trackNumber, trackName, previewUrl }) => (
+                  { listMusic.map((music) => (
                     <MusicCard
-                      key={ trackNumber }
-                      trackName={ trackName }
-                      previewUrl={ previewUrl }
+                      key={ music.trackNumber }
+                      value={ music }
                     />
                   )) }
                 </div>
