@@ -84,7 +84,7 @@ class Album extends Component {
                 <div>
                   { listMusic.map((music) => (
                     <MusicCard
-                      key={ music.trackNumber }
+                      key={ music.trackId }
                       value={ music }
                       checked={ favoriteSong
                         .some(({ trackId }) => +trackId === +music.trackId) }
