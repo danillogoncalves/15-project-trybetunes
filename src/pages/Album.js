@@ -4,6 +4,7 @@ import Header from './Header';
 import getMusics from '../services/musicsAPI';
 import Loading from './Loading';
 import MusicCard from './MusicCard';
+import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
 
 class Album extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class Album extends Component {
       collectionName: '',
       loading: false,
       listMusic: [],
+      favoriteSong: [],
     };
   }
 
@@ -23,12 +25,38 @@ class Album extends Component {
       loading: true,
     }, async () => {
       const collection = await getMusics(id);
+      const favoriteSong = await getFavoriteSongs();
       const listMusic = collection.filter((_music, index) => index !== 0);
       this.setState({
         artistName: collection[0].artistName,
         artworkUrl100: collection[0].artworkUrl100,
         collectionName: collection[0].collectionName,
         listMusic,
+        favoriteSong,
+        loading: false,
+      });
+    });
+  }
+
+  checkedFavoriteSong = async () => {
+    const favoriteSong = await getFavoriteSongs();
+    favoriteSong.forEach();
+  }
+
+  handleChange = async ({ target }) => {
+    const { listMusic } = this.state;
+    const song = listMusic.find(({ trackId }) => trackId === +target.id);
+    this.setState({
+      loading: true,
+    }, async () => {
+      if (target.checked) {
+        await addSong(song);
+      } else {
+        await removeSong(song);
+      }
+      const favoriteSong = await getFavoriteSongs();
+      this.setState({
+        favoriteSong,
         loading: false,
       });
     });
@@ -39,6 +67,7 @@ class Album extends Component {
       listMusic,
       artistName,
       artworkUrl100,
+      favoriteSong,
       collectionName } = this.state;
     return (
       <>
@@ -57,6 +86,9 @@ class Album extends Component {
                     <MusicCard
                       key={ music.trackNumber }
                       value={ music }
+                      checked={ favoriteSong
+                        .some(({ trackId }) => +trackId === +music.trackId) }
+                      handleChange={ this.handleChange }
                     />
                   )) }
                 </div>
