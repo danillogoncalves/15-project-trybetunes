@@ -10,7 +10,7 @@ class Search extends Component {
     this.state = {
       loading: false,
       inputArtistName: '',
-      nameSearched: '',
+      nameSearched: false,
       searchResult: [],
       hasArtistTheName: false,
       isDisebedButton: true,
