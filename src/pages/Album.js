@@ -38,11 +38,6 @@ class Album extends Component {
     });
   }
 
-  checkedFavoriteSong = async () => {
-    const favoriteSong = await getFavoriteSongs();
-    favoriteSong.forEach();
-  }
-
   handleChange = async ({ target }) => {
     const { listMusic } = this.state;
     const song = listMusic.find(({ trackId }) => trackId === +target.id);
