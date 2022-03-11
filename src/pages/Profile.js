@@ -28,7 +28,6 @@ class Profile extends Component {
   render() {
     const { userProfile, loading } = this.state;
     const { name, email, image, description } = userProfile;
-    console.log(userProfile);
     return (
       <>
         <Header />

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import Header from './Header';
-import { getUser } from '../services/userAPI';
+import { getUser, updateUser } from '../services/userAPI';
 import Loading from './Loading';
 
 class ProfileEdit extends Component {
@@ -11,6 +12,8 @@ class ProfileEdit extends Component {
       email: '',
       image: '',
       description: '',
+      disabled: true,
+      redirect: false,
       loading: false,
     };
   }
@@ -27,23 +30,53 @@ class ProfileEdit extends Component {
         email,
         image,
         description,
-      });
+      }, this.buttonValidation);
     });
+  }
+
+  buttonValidation = () => {
+    const {
+      name,
+      email,
+      image,
+      description,
+    } = this.state;
+    const emailValidatinon = /\S+@\S+\.\S+/;
+    const isValidEmail = emailValidatinon.test(email);
+    if (name && isValidEmail && image && description) {
+      this.setState({ disabled: false });
+    } else {
+      this.setState({ disabled: true });
+    }
   }
 
   handleChange = ({ target }) => {
     const { name, value } = target;
     this.setState({
       [name]: value,
-    });
+    }, this.buttonValidation);
+  }
+
+  handleClick = async (event) => {
+    event.preventDefault();
+    const { name, email, image, description } = this.state;
+    const updatedUser = {
+      name,
+      email,
+      image,
+      description,
+    };
+    await updateUser(updatedUser);
+    this.setState({ redirect: true });
   }
 
   render() {
-    const { name, email, image, description, loading } = this.state;
+    const { name, email, image, description, disabled, redirect, loading } = this.state;
     return (
       <>
         <Header />
         <div data-testid="page-profile-edit">
+          {redirect ? <Redirect to="/profile" /> : null}
           {loading
             ? <Loading />
             : (
@@ -51,10 +84,12 @@ class ProfileEdit extends Component {
                 <h1>ProfileEdit</h1>
                 <h1>Profile</h1>
                 <form>
-                  <img
-                    src={ image }
-                    alt="UserImage"
-                  />
+                  <div>
+                    <img
+                      src={ image }
+                      alt="UserImage"
+                    />
+                  </div>
                   <input
                     data-testid="edit-input-image"
                     value={ image }
@@ -82,12 +117,16 @@ class ProfileEdit extends Component {
                     name="description"
                     onChange={ this.handleChange }
                   />
-                  <button
-                    data-testid="edit-button-save"
-                    type="submit"
-                  >
-                    Salvar
-                  </button>
+                  <div>
+                    <button
+                      data-testid="edit-button-save"
+                      type="submit"
+                      onClick={ this.handleClick }
+                      disabled={ disabled }
+                    >
+                      Salvar
+                    </button>
+                  </div>
                 </form>
               </div>
             )}
