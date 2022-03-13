@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Header from './Header';
 import { getUser, updateUser } from '../services/userAPI';
 import Loading from './Loading';
@@ -13,7 +13,6 @@ class ProfileEdit extends Component {
       image: '',
       description: '',
       disabled: true,
-      redirect: false,
       loading: false,
     };
   }
@@ -60,23 +59,27 @@ class ProfileEdit extends Component {
   handleClick = async (event) => {
     event.preventDefault();
     const { name, email, image, description } = this.state;
+    const { history } = this.props;
     const updatedUser = {
       name,
       email,
       image,
       description,
     };
-    await updateUser(updatedUser);
-    this.setState({ redirect: true });
+    // Tive ajuda da Luá - Turma 19 - Tribo A e do Luá (ela/dela) - Turma 19 - Tribo A,
+    // A descobrir pq não passava no teste, mas funcionava o a aplicação funcionava
+    this.setState({ loading: true }, async () => {
+      await updateUser(updatedUser);
+      history.push('/profile');
+    });
   }
 
   render() {
-    const { name, email, image, description, disabled, redirect, loading } = this.state;
+    const { name, email, image, description, disabled, loading } = this.state;
     return (
       <>
         <Header />
         <div data-testid="page-profile-edit">
-          {redirect ? <Redirect to="/profile" /> : null}
           {loading
             ? <Loading />
             : (
@@ -135,5 +138,11 @@ class ProfileEdit extends Component {
     );
   }
 }
+
+ProfileEdit.propTypes = {
+  history: PropTypes.objectOf(
+    PropTypes.any,
+  ).isRequired,
+};
 
 export default ProfileEdit;
